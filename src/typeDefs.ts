@@ -1,4 +1,4 @@
-import courseTypeDefs from './courses/typeDef';
+import courseTypeDefs from './courses/courses.typeDef';
 
 const typeDefs = [courseTypeDefs];
 

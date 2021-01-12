@@ -6,8 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const helmet_1 = __importDefault(require("helmet"));
-// const { NODE_ENV } = require('./config');
-const config_1 = __importDefault(require("./config"));
 const app = express_1.default();
 dotenv_1.default.config();
 // TODO: turn contentSecurityPolicy back on in production.
@@ -17,7 +15,7 @@ app.get('/', (req, res) => {
 });
 app.use(function errorHandler(error, req, res) {
     let response;
-    if (config_1.default === 'production') {
+    if (process.env.NODE_ENV === 'production') {
         response = { error: { message: 'server error' } };
     }
     else {

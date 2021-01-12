@@ -9,6 +9,7 @@ const courseTypeDefs = gql`
 
 	type Query {
 		courses: [Course]
+		course(id: ID): Course
 	}
 `;
 
