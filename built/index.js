@@ -13,16 +13,16 @@ app.use(helmet_1.default({ contentSecurityPolicy: false }));
 app.get('/', (req, res) => {
     res.send('Hello Ms. World!');
 });
-app.use(function errorHandler(error, req, res) {
-    let response;
-    if (process.env.NODE_ENV === 'production') {
-        response = { error: { message: 'server error' } };
-    }
-    else {
-        // tslint:disable-next-line:no-console
-        console.error(error);
-        response = { message: error.message, error };
-    }
-    res.status(500).json(response);
-});
+// TODO: set up error handling and logging with Winston
+// app.use(function errorHandler(error: any, req: Request, res: Response) {
+// 	let response;
+// 	if (process.env.NODE_ENV === 'production') {
+// 		response = { error: { message: 'server error' } };
+// 	} else {
+// 		// tslint:disable-next-line:no-console
+// 		console.error(error);
+// 		response = { message: error.message, error };
+// 	}
+// 	res.status(500).json(response);
+// });
 exports.default = app;
