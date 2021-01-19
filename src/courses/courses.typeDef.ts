@@ -23,12 +23,12 @@ const courseTypeDefs = gql`
 	}
 
 	input CourseInput {
-		id: ID
-		course_code: Int!
-		course_name: String!
+		id: ID!
+		course_code: Int
+		course_name: String
 		course_desc: String
 		course_level: String
-		college_credits: Int!
+		college_credits: Int
 		department: String
 		hs_credits: Float
 		hs_department: String

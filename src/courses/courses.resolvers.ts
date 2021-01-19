@@ -2,17 +2,17 @@ import db from '../db';
 
 const courseResolvers = {
 	Query: {
-		courses: async () => {
+		courses: async (context: any) => {
 			try {
-				const arrOfCourses = await db.query(
-					'SELECT * FROM courses WHERE isActive = true AND isDeleted = false'
-				);
+				const statement =
+					'SELECT * FROM courses WHERE isActive = true AND isDeleted = false';
+				const arrOfCourses = await db.query(statement);
 				return arrOfCourses.rows;
 			} catch (e) {
 				console.log(e.stack);
 			}
 		},
-		course: async (obj: any, args: any) => {
+		course: async (obj: any, args: any, context: any) => {
 			try {
 				const foundCourse = await db.query(
 					`SELECT * FROM courses WHERE id = '${args.id}';`
