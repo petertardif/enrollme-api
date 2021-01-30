@@ -13,6 +13,9 @@ const courseTypeDefs = apollo_server_express_1.gql `
 		hs_credits: Float
 		hs_department: String
 		culturally_relevant: Boolean
+		isDeleted: Boolean
+		isActive: Boolean
+		updatedAt: String
 	}
 
 	type Query {
@@ -22,11 +25,11 @@ const courseTypeDefs = apollo_server_express_1.gql `
 
 	input CourseInput {
 		id: ID!
-		course_code: Int!
-		course_name: String!
+		course_code: Int
+		course_name: String
 		course_desc: String
 		course_level: String
-		college_credits: Int!
+		college_credits: Int
 		department: String
 		hs_credits: Float
 		hs_department: String
@@ -46,11 +49,8 @@ const courseTypeDefs = apollo_server_express_1.gql `
 			culturally_relevant: Boolean
 		): [Course]
 		updateCourse(course: CourseInput): [Course]
-		deleteCourse(
-			id: ID!
-			isDeleted!
-			isActive!
-		): [Course]
+		deleteCourse(id: ID!): [Course]
+		reactivateCourse(id: ID!): [Course]
 	}
 `;
 exports.default = courseTypeDefs;

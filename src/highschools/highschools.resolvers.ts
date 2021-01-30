@@ -1,4 +1,5 @@
 import db from '../db';
+import xss from 'xss';
 
 const highSchoolsResolvers = {
 	Query: {
@@ -29,7 +30,11 @@ const highSchoolsResolvers = {
 			try {
 				const statement =
 					'INSERT INTO highschools (school_num, school_name, network) VALUES ($1,$2,$3) RETURNING *';
-				const values = [args.school_num, `${args.school_name}`, args.network];
+				const values = [
+					args.school_num,
+					xss(`${args.school_name}`),
+					args.network,
+				];
 				const newHighSchool = await db.query(statement, values);
 				return newHighSchool.rows;
 			} catch (e) {
@@ -43,7 +48,7 @@ const highSchoolsResolvers = {
 					'UPDATE highschools SET school_num = $1, school_name = $2, network = $3, isDeleted = $4, isActive = $5, updatedAt = $6 WHERE id = $7 RETURNING *';
 				const values = [
 					highSchool.school_num,
-					`${highSchool.school_name}`,
+					xss(`${highSchool.school_name}`),
 					highSchool.network,
 					highSchool.isDeleted,
 					highSchool.isActive,

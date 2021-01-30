@@ -6,7 +6,7 @@ CREATE TABLE courses (
   course_level TEXT,
   college_credits INTEGER NOT NULL,
   department TEXT,
-  hs_credits INTEGER,
+  hs_credits DECIMAL,
   hs_department TEXT,
   culturally_relevant BOOLEAN,
   isDeleted BOOLEAN DEFAULT false NOT NULL,

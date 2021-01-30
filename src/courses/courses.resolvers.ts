@@ -1,4 +1,5 @@
 import db from '../db';
+import xss from 'xss';
 
 const courseResolvers = {
 	Query: {
@@ -31,13 +32,13 @@ const courseResolvers = {
 					'INSERT INTO courses (course_code,course_name,course_desc, course_level, college_credits, department, hs_credits, hs_department, culturally_relevant) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *';
 				const values = [
 					`${args.course_code}`,
-					`${args.course_name}`,
-					`${args.course_desc}`,
-					`${args.course_level}`,
+					xss(`${args.course_name}`),
+					xss(`${args.course_desc}`),
+					xss(`${args.course_level}`),
 					`${args.college_credits}`,
-					`${args.department}`,
+					xss(`${args.department}`),
 					`${args.hs_credits}`,
-					`${args.hs_department}`,
+					xss(`${args.hs_department}`),
 					`${args.culturally_relevant}`,
 				];
 				const newCourse = await db.query(statement, values);
@@ -55,13 +56,13 @@ const courseResolvers = {
 
 				const values = [
 					course.course_code,
-					`${course.course_name}`,
-					`${course.course_desc}`,
-					`${course.course_level}`,
+					xss(`${course.course_name}`),
+					xss(`${course.course_desc}`),
+					xss(`${course.course_level}`),
 					course.college_credits,
-					`${course.department}`,
+					xss(`${course.department}`),
 					course.hs_credits,
-					`${course.hs_department}`,
+					xss(`${course.hs_department}`),
 					course.culturally_relevant,
 					updatedDate,
 					course.id,

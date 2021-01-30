@@ -1,4 +1,5 @@
 import db from '../db';
+import xss from 'xss';
 
 const higherEdInstitutionsResolvers = {
 	Query: {
@@ -30,11 +31,11 @@ const higherEdInstitutionsResolvers = {
 				const statement =
 					'INSERT INTO higheredinstitutions (name, institution_type,short_name, cde_number, cde_name, isCE, isDE) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *';
 				const values = [
-					`${args.name}`,
+					xss(`${args.name}`),
 					args.institution_type,
-					`${args.short_name}`,
+					xss(`${args.short_name}`),
 					args.cde_number,
-					`${args.cde_name}`,
+					xss(`${args.cde_name}`),
 					args.isCE,
 					args.isDE,
 				];
@@ -54,11 +55,11 @@ const higherEdInstitutionsResolvers = {
 				const statement =
 					'UPDATE higheredinstitutions SET name = $1, institution_type = $2, short_name = $3, cde_number = $4, cde_name = $5, isCE = $6, isDE = $7, isDeleted = $8, isActive = $9, updatedAt = $10 WHERE id = $11 RETURNING *';
 				const values = [
-					`${higherEdInstitution.name}`,
+					xss(`${higherEdInstitution.name}`),
 					higherEdInstitution.institution_type,
-					`${higherEdInstitution.short_name}`,
+					xss(`${higherEdInstitution.short_name}`),
 					higherEdInstitution.cde_number,
-					`${higherEdInstitution.cde_name}`,
+					xss(`${higherEdInstitution.cde_name}`),
 					higherEdInstitution.isCE,
 					higherEdInstitution.isDE,
 					higherEdInstitution.isDeleted,
