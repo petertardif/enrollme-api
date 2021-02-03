@@ -15,5 +15,9 @@ CREATE TABLE courserequests (
   period TEXT,
   days TEXT,
   times TEXT,
-  projected_enrollment INTEGER
+  projected_enrollment INTEGER,
+  isDeleted BOOLEAN DEFAULT false NOT NULL,
+  isActive BOOLEAN DEFAULT true NOT NULL,
+  onWishlist BOOLEAN DEFAULT false,
+  updatedAt TIMESTAMPTZ DEFAULT now() NOT NULL
 );

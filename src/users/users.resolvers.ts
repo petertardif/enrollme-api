@@ -1,6 +1,8 @@
 import bcrypt from 'bcryptjs';
 import db from '../db';
 import xss from 'xss';
+import { validatePassword } from '../authorization/auth.utils';
+import { ApolloError } from 'apollo-server-express';
 
 const hashPassword = async (password: string) => {
 	return await bcrypt.hash(password, 12);
@@ -33,8 +35,29 @@ const usersResolvers = {
 	Mutation: {
 		createUser: async (obj: any, args: any, context: any) => {
 			try {
+				// check if email already exists
+				const emailStatement = 'SELECT email FROM users WHERE email = $1';
+				const emailValue = [args.email];
+				const emailCheck = await db.query(emailStatement, emailValue);
+				const foundEmail = emailCheck.rows;
+
+				if (foundEmail[0])
+					throw new ApolloError(
+						`User account with '${foundEmail[0].email}' already exists. Please use forgot password link or contact the administrator to reactivate your account.`
+					);
+				// validate password
+				const passwordError = validatePassword(args.password);
+				console.log(passwordError);
+				// if there is a password error, throw a new Apollo error
+				if (passwordError)
+					throw new ApolloError(
+						`Password did not meet validation requirements. Please try again.`
+					);
+				// hash password
 				const cleanedPass = xss(`${args.password}`);
 				const hashedPass = await hashPassword(cleanedPass);
+
+				// make call to database to store password in database
 				const statement =
 					'INSERT INTO users (last_name, first_name, email, password, role, school_id, higheredinstitution_id) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *';
 				const values = [

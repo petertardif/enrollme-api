@@ -1,1 +1,1 @@
-DROP TABLE IF EXISTS courserequests;
+DROP TABLE IF EXISTS courserequests CASCADE;
