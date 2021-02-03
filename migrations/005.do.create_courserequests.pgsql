@@ -3,7 +3,7 @@ CREATE TABLE courserequests (
   higheredinstitution_id INTEGER  
     REFERENCES higheredinstitutions(id) ON DELETE CASCADE NOT NULL,
   school_id INTEGER
-    REFERENCES schools(id) ON DELETE CASCADE NOT NULL,
+    REFERENCES highschools(id) ON DELETE CASCADE NOT NULL,
   course_id INTEGER
     REFERENCES courses(id) ON DELETE CASCADE NOT NULL,
   course_type TEXT NOT NULL,

@@ -1,6 +1,7 @@
-import { gql } from 'apollo-server-express';
-
-const courserequestsTypeDefs = gql`
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const apollo_server_express_1 = require("apollo-server-express");
+const courserequestsTypeDefs = apollo_server_express_1.gql `
 	enum AcademicTerm {
 		FALL
 		SPRING
@@ -42,7 +43,6 @@ const courserequestsTypeDefs = gql`
 
 	type CourseRequest {
 		id: ID!
-		higheredinstitution_id: Int!
 		school_id: Int!
 		course_id: Int!
 		course_type: CourseType
@@ -67,14 +67,13 @@ const courserequestsTypeDefs = gql`
 
 	input CourseRequestInput {
 		id: ID!
-		higheredinstitution_id: Int!
 		school_id: Int!
 		course_id: Int!
-		course_type: CourseType
-		instructor_type: InstructorType
+		course_type: String
+		instructor_type: String
 		instructor_id: Int
 		school_year: Int!
-		academic_term: AcademicTerm!
+		academic_term: String!
 		period: String
 		days: String
 		times: String
@@ -83,14 +82,13 @@ const courserequestsTypeDefs = gql`
 
 	extend type Mutation {
 		createCourseRequest(
-			higheredinstitution_id: Int!
 			school_id: Int!
 			course_id: Int!
-			course_type: CourseType
-			instructor_type: InstructorType
+			course_type: String
+			instructor_type: String
 			instructor_id: Int
 			school_year: Int!
-			academic_term: AcademicTerm!
+			academic_term: String!
 			period: String
 			days: String
 			times: String
@@ -103,5 +101,4 @@ const courserequestsTypeDefs = gql`
 		addCourseRequestToWishlist(id: ID!): [CourseRequest]
 	}
 `;
-
-export default courserequestsTypeDefs;
+exports.default = courserequestsTypeDefs;

@@ -15,9 +15,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const db_1 = __importDefault(require("../db"));
 const xss_1 = __importDefault(require("xss"));
-const hashPassword = (password) => {
-    return bcryptjs_1.default.hash(password, 12);
-};
+const auth_utils_1 = require("../authorization/auth.utils");
+const apollo_server_express_1 = require("apollo-server-express");
+const hashPassword = (password) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield bcryptjs_1.default.hash(password, 12);
+});
 const usersResolvers = {
     Query: {
         users: (context) => __awaiter(void 0, void 0, void 0, function* () {
@@ -42,11 +44,27 @@ const usersResolvers = {
             }
         }),
     },
-    Mutations: {
+    Mutation: {
         createUser: (obj, args, context) => __awaiter(void 0, void 0, void 0, function* () {
             try {
-                const hashedPass = hashPassword(xss_1.default(`${args.password}`));
-                const statement = 'INSERT INTO users (last_name, first_name, email, password, role, school_id, higherEdInstitution_id) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *';
+                // check if email already exists
+                const emailStatement = 'SELECT email FROM users WHERE email = $1';
+                const emailValue = [args.email];
+                const emailCheck = yield db_1.default.query(emailStatement, emailValue);
+                const foundEmail = emailCheck.rows;
+                if (foundEmail[0])
+                    throw new apollo_server_express_1.ApolloError(`User account with '${foundEmail[0].email}' already exists. Please use forgot password link or contact the administrator to reactivate your account.`);
+                // validate password
+                const passwordError = auth_utils_1.validatePassword(args.password);
+                console.log(passwordError);
+                // if there is a password error, throw a new Apollo error
+                if (passwordError)
+                    throw new apollo_server_express_1.ApolloError(`Password did not meet validation requirements. Please try again.`);
+                // hash password
+                const cleanedPass = xss_1.default(`${args.password}`);
+                const hashedPass = yield hashPassword(cleanedPass);
+                // make call to database to store password in database
+                const statement = 'INSERT INTO users (last_name, first_name, email, password, role, school_id, higheredinstitution_id) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *';
                 const values = [
                     xss_1.default(`${args.last_name}`),
                     xss_1.default(`${args.first_name}`),
@@ -54,7 +72,7 @@ const usersResolvers = {
                     hashedPass,
                     xss_1.default(`${args.role}`),
                     args.school_id,
-                    args.higherEdInstitution_id,
+                    args.higheredinstitution_id,
                 ];
                 const newUser = yield db_1.default.query(statement, values);
                 return newUser.rows;
@@ -65,8 +83,9 @@ const usersResolvers = {
         }),
         updateUser: (obj, { user }, context) => __awaiter(void 0, void 0, void 0, function* () {
             try {
-                const hashedPass = hashPassword(xss_1.default(`${user.password}`));
-                const statement = 'UPDATE users SET last_name = $1, first_name = $2, email = $3, password = $4, role = $5, school_id = $6, higherEdInstitution_id = $7 RETURNING *';
+                const cleanedPass = xss_1.default(`${user.password}`);
+                const hashedPass = yield hashPassword(cleanedPass);
+                const statement = 'UPDATE users SET last_name = $1, first_name = $2, email = $3, password = $4, role = $5, school_id = $6, higheredinstitution_id = $7 WHERE id = $8 RETURNING *';
                 const values = [
                     xss_1.default(`${user.last_name}`),
                     xss_1.default(`${user.first_name}`),
@@ -74,7 +93,8 @@ const usersResolvers = {
                     hashedPass,
                     xss_1.default(`${user.role}`),
                     user.school_id,
-                    user.higherEdInstitution_id,
+                    user.higheredinstitution_id,
+                    user.id,
                 ];
                 const updateUser = yield db_1.default.query(statement, values);
                 return updateUser.rows;
@@ -106,7 +126,7 @@ const usersResolvers = {
             }
         }),
     },
-    Users: {
+    User: {
         highschools: (obj, args, context) => __awaiter(void 0, void 0, void 0, function* () {
             try {
                 const statement = `SELECT * FROM highschools WHERE id = $1`;
@@ -121,7 +141,7 @@ const usersResolvers = {
         higherEdInstitutions: (obj, args, context) => __awaiter(void 0, void 0, void 0, function* () {
             try {
                 const statement = `SELECT * FROM higheredinstitutions WHERE id = $1`;
-                const values = [`${obj.higherEdInstitution_id}`];
+                const values = [`${obj.higheredinstitution_id}`];
                 const foundHigherEdInstitutions = yield db_1.default.query(statement, values);
                 return foundHigherEdInstitutions.rows;
             }
@@ -130,6 +150,5 @@ const usersResolvers = {
             }
         }),
     },
-    HigherEdInstitutions: {},
 };
 exports.default = usersResolvers;

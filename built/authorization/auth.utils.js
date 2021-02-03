@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verifyJwt = exports.createJwt = exports.comparePasswords = exports.getUserWithEmail = void 0;
+exports.validatePassword = exports.verifyJwt = exports.createJwt = exports.comparePasswords = exports.getUserWithEmail = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_1 = __importDefault(require("../config/config"));
@@ -20,8 +20,8 @@ const getUserWithEmail = (db, email) => __awaiter(void 0, void 0, void 0, functi
     try {
         const statement = 'SELECT * FROM users WHERE email = $1';
         const values = [email];
-        const foundUser = db.query(statement, values);
-        return foundUser.rows;
+        const foundUser = yield db.query(statement, values);
+        return foundUser.rows[0];
     }
     catch (e) {
         console.log(e.stack);
@@ -45,3 +45,20 @@ const verifyJwt = (token) => {
     });
 };
 exports.verifyJwt = verifyJwt;
+const validatePassword = (password) => {
+    const REGEX_UPPER_LOWER_NUMBER_SPECIAL = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&])[\S]+/;
+    if (password.length < 8) {
+        return 'Password must be longer than 8 characters';
+    }
+    if (password.length > 72) {
+        return 'Password must be less than 72 characters';
+    }
+    if (password.startsWith(' ') || password.endsWith(' ')) {
+        return 'Password must not start or end with empty spaces';
+    }
+    if (!REGEX_UPPER_LOWER_NUMBER_SPECIAL.test(password)) {
+        return 'Password must contain 1 uppercase letter, 1 lowercase letter, a number and a special character';
+    }
+    return null;
+};
+exports.validatePassword = validatePassword;

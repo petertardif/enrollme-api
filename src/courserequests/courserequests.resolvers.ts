@@ -29,8 +29,9 @@ const courserequestsResolvers = {
 		createCourseRequest: async (obj: any, args: any, context: any) => {
 			try {
 				const statement =
-					'INSERT INTO courserequests (school_id, course_id, course_type, instructor_type, instructor_id, school_year, academic_term, period, days, times, projected_enrollment) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,10,$11) RETURNING *';
+					'INSERT INTO courserequests (higheredinstitution_id, school_id, course_id, course_type, instructor_type, instructor_id, school_year, academic_term, period, days, times, projected_enrollment) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11, $12) RETURNING *';
 				const values = [
+					args.higheredinstitution_id,
 					args.school_id,
 					args.course_id,
 					xss(`${args.course_type}`),
@@ -56,8 +57,9 @@ const courserequestsResolvers = {
 		) => {
 			try {
 				const statement =
-					'UPDATE courserequests SET school_id = $1, course_id = $2, course_type = $3, instructor_type = $4, instructor_id = $5, school_year = $6, academic_term = $7 period = $8, days = $9, times = $10, projected_enrollment = $11 WHERE id = $12 RETURNING *';
+					'UPDATE courserequests SET higheredinstitution_id = $1, school_id = $2, course_id = $3, course_type = $4, instructor_type = $5, instructor_id = $6, school_year = $7, academic_term = $8, period = $9, days = $10, times = $11, projected_enrollment = $12 WHERE id = $13 RETURNING *';
 				const values = [
+					courserequest.higheredinstitution_id,
 					courserequest.school_id,
 					courserequest.course_id,
 					xss(`${courserequest.course_type}`),
