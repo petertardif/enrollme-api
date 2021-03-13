@@ -13,7 +13,7 @@ const highSchoolsResolvers = {
 				console.log(e.stack);
 			}
 		},
-		highSchool: async (obj: any, { id }: any, context: any) => {
+		highSchool: async (obj: any, { id }: { id: number }, context: any) => {
 			try {
 				const statement = 'SELECT * FROM highschools WHERE id = $1';
 				const values = [`${id}`];
@@ -26,7 +26,11 @@ const highSchoolsResolvers = {
 	},
 
 	Mutation: {
-		createHighSchool: async (obj: any, args: any, context: any) => {
+		createHighSchool: async (
+			obj: any,
+			args: { school_num: number; school_name: string; network: string },
+			context: any
+		) => {
 			try {
 				const statement =
 					'INSERT INTO highschools (school_num, school_name, network) VALUES ($1,$2,$3) RETURNING *';

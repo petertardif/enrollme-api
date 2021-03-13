@@ -14,6 +14,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_1 = __importDefault(require("../db"));
 const xss_1 = __importDefault(require("xss"));
+const users_resolvers_1 = __importDefault(require("../users/users.resolvers"));
+const users_resolvers_2 = __importDefault(require("../users/users.resolvers"));
 const courserequestsResolvers = {
     Query: {
         courserequests: (context) => __awaiter(void 0, void 0, void 0, function* () {
@@ -41,8 +43,9 @@ const courserequestsResolvers = {
     Mutation: {
         createCourseRequest: (obj, args, context) => __awaiter(void 0, void 0, void 0, function* () {
             try {
-                const statement = 'INSERT INTO courserequests (school_id, course_id, course_type, instructor_type, instructor_id, school_year, academic_term, period, days, times, projected_enrollment) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,10,$11) RETURNING *';
+                const statement = 'INSERT INTO courserequests (higheredinstitution_id, school_id, course_id, course_type, instructor_type, instructor_id, school_year, academic_term, period, days, times, projected_enrollment) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11, $12) RETURNING *';
                 const values = [
+                    args.higheredinstitution_id,
                     args.school_id,
                     args.course_id,
                     xss_1.default(`${args.course_type}`),
@@ -64,8 +67,9 @@ const courserequestsResolvers = {
         }),
         updateCourseRequest: (obj, { courserequest }, context) => __awaiter(void 0, void 0, void 0, function* () {
             try {
-                const statement = 'UPDATE courserequests SET school_id = $1, course_id = $2, course_type = $3, instructor_type = $4, instructor_id = $5, school_year = $6, academic_term = $7 period = $8, days = $9, times = $10, projected_enrollment = $11 WHERE id = $12 RETURNING *';
+                const statement = 'UPDATE courserequests SET higheredinstitution_id = $1, school_id = $2, course_id = $3, course_type = $4, instructor_type = $5, instructor_id = $6, school_year = $7, academic_term = $8, period = $9, days = $10, times = $11, projected_enrollment = $12 WHERE id = $13 RETURNING *';
                 const values = [
+                    courserequest.higheredinstitution_id,
                     courserequest.school_id,
                     courserequest.course_id,
                     xss_1.default(`${courserequest.course_type}`),
@@ -130,6 +134,10 @@ const courserequestsResolvers = {
                 console.log(e.stack);
             }
         }),
+    },
+    User: {
+        highschools: users_resolvers_1.default,
+        higherEdInstitutions: users_resolvers_2.default,
     },
 };
 exports.default = courserequestsResolvers;

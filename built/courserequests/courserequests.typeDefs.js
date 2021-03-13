@@ -43,6 +43,7 @@ const courserequestsTypeDefs = apollo_server_express_1.gql `
 
 	type CourseRequest {
 		id: ID!
+		higheredinstitution_id: Int!
 		school_id: Int!
 		course_id: Int!
 		course_type: CourseType
@@ -58,6 +59,10 @@ const courserequestsTypeDefs = apollo_server_express_1.gql `
 		isActive: Boolean
 		onWishlist: Boolean
 		updatedAt: String
+		highschools: [HighSchool]
+		higherEdInstitutions: [HigherEdInstitution]
+		courses: [Course]
+		instructors: [User]
 	}
 
 	extend type Query {
@@ -67,13 +72,14 @@ const courserequestsTypeDefs = apollo_server_express_1.gql `
 
 	input CourseRequestInput {
 		id: ID!
+		higheredinstitution_id: Int!
 		school_id: Int!
 		course_id: Int!
-		course_type: String
-		instructor_type: String
+		course_type: CourseType
+		instructor_type: InstructorType
 		instructor_id: Int
 		school_year: Int!
-		academic_term: String!
+		academic_term: AcademicTerm!
 		period: String
 		days: String
 		times: String
@@ -82,13 +88,14 @@ const courserequestsTypeDefs = apollo_server_express_1.gql `
 
 	extend type Mutation {
 		createCourseRequest(
+			higheredinstitution_id: Int!
 			school_id: Int!
 			course_id: Int!
-			course_type: String
-			instructor_type: String
+			course_type: CourseType
+			instructor_type: InstructorType
 			instructor_id: Int
 			school_year: Int!
-			academic_term: String!
+			academic_term: AcademicTerm!
 			period: String
 			days: String
 			times: String

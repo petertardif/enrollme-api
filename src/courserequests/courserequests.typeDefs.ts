@@ -58,6 +58,10 @@ const courserequestsTypeDefs = gql`
 		isActive: Boolean
 		onWishlist: Boolean
 		updatedAt: String
+		highschools: [HighSchool]
+		higherEdInstitutions: [HigherEdInstitution]
+		courses: [Course]
+		instructors: [User]
 	}
 
 	extend type Query {

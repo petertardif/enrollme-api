@@ -3,6 +3,7 @@
 	"version": "1.0.0",
 	"description": "The enrollme API for dual and concurrent enrollment in Denver Public Schools.",
 	"main": "built/index.js",
+	"proxy": "http://localhost:3001",
 	"scripts": {
 		"prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
 		"build": "tsc",
@@ -26,6 +27,7 @@
 		"@types/node": "^14.14.20",
 		"apollo-server-express": "^2.19.1",
 		"bcryptjs": "^2.4.3",
+		"cookie-parser": "^1.4.5",
 		"cors": "^2.8.5",
 		"dotenv": "^8.2.0",
 		"express": "^4.17.1",

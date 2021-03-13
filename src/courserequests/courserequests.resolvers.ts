@@ -1,5 +1,7 @@
 import db from '../db';
 import xss from 'xss';
+import highschools from '../users/users.resolvers';
+import higherEdInstitutions from '../users/users.resolvers';
 
 const courserequestsResolvers = {
 	Query: {
@@ -123,6 +125,11 @@ const courserequestsResolvers = {
 				console.log(e.stack);
 			}
 		},
+	},
+
+	User: {
+		highschools,
+		higherEdInstitutions,
 	},
 };
 
